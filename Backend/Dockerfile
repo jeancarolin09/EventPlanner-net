@@ -26,8 +26,8 @@ WORKDIR /app
 # Copier les fichiers du projet
 COPY . .
 
-# Installer les dépendances Composer
-RUN composer install --no-dev --optimize-autoloader
+    # Installer les dépendances Composer
+RUN composer install --optimize-autoloader
 
 # Créer les répertoires nécessaires
 RUN mkdir -p var/cache var/log public/uploads/profile
