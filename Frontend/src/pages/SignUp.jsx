@@ -1,4 +1,4 @@
-import SignupForm from '../components/SignupForm.jsx'; // FIX: Ajout de l'extension .jsx
+import SignupForm from '../components/SignUpForm.jsx'; // FIX: Ajout de l'extension .jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
