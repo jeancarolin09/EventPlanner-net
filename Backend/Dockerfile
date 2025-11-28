@@ -1,38 +1,42 @@
 FROM php:8.3-fpm
 
-# Install system dependencies
+# Installer dépendances système
 RUN apt-get update && apt-get install -y \
-    nginx \
-    default-libmysqlclient-dev \
-    libicu-dev \
     git \
     curl \
+    unzip \
     zip \
-    unzip
+    libicu-dev \
+    libzip-dev \
+    libonig-dev \
+    libxml2-dev \
+    default-mysql-client \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql intl
+# Installer les extensions PHP nécessaires à Symfony + API Platform + JWT
+RUN docker-php-ext-install \
+    pdo pdo_mysql \
+    intl \
+    zip \
+    opcache \
+    && docker-php-ext-enable intl
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Installer Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
+# Définir le répertoire de travail
 WORKDIR /app
 
-# Copy project
+# Copier les fichiers du projet
 COPY . .
 
-RUN composer install --optimize-autoloader --no-dev
+# Installer les dépendances PHP
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Configure Nginx
-RUN rm /etc/nginx/sites-enabled/default
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Créer les dossiers nécessaires
+RUN mkdir -p var/cache var/log public/uploads/profile \
+    && chmod -R 777 var/
 
-# Create necessary directories
-RUN mkdir -p var/cache var/log public/uploads/profile && \
-    chmod -R 777 var/ public/uploads/profile
+EXPOSE 8000
 
-# Railway exposes $PORT dynamically
-ENV PORT=8080
-
-# Start Nginx + PHP-FPM
-CMD service nginx start && php-fpm
+CMD ["php-fpm"]
