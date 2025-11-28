@@ -21,7 +21,7 @@ function AppRoutes() {
       {/* Pages publiques */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/signUp" element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignUp />} />
+      <Route path="/SignUp" element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignUp />} />
 
       {/* Pages privées */}
       <Route path="/dashboard" element={isAuthenticated ? <Layout><Dashboard /></Layout> : <Navigate to="/login" />} />
