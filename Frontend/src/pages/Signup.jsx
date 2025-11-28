@@ -28,7 +28,7 @@ const Signup = () => {
             setVerificationInfo({ email: user.email, token });
 
              setNotification({
-                message: '✅ Inscription réussie ! Code de vérification envoyé à ' + user.email + '.',
+             message: '✅ Inscription réussie ! Code de vérification envoyé à ' + user.email + '.',
                 type: 'success'
             });
 

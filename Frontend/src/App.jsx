@@ -3,7 +3,7 @@ import React from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import Login from "./pages/Login.jsx";
-import Signup from "./pages/SignUp.jsx"; 
+import SignUp from "./pages/SignUp.jsx"; 
 import Home from "./pages/Home.jsx";
 import Layout from "./layouts/Layout.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
@@ -21,7 +21,7 @@ function AppRoutes() {
       {/* Pages publiques */}
       <Route path="/" element={<Home />} />
       <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/signup" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Signup />} />
+      <Route path="/signUp" element={isAuthenticated ? <Navigate to="/dashboard" /> : <SignUp />} />
 
       {/* Pages privées */}
       <Route path="/dashboard" element={isAuthenticated ? <Layout><Dashboard /></Layout> : <Navigate to="/login" />} />
