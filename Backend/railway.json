@@ -1,0 +1,8 @@
+{
+  "build": {
+    "nixPkgs": [
+      "php84",
+      "composer"
+    ]
+  }
+}
