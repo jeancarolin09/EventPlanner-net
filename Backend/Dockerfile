@@ -30,12 +30,18 @@ WORKDIR /app
 # Copier les fichiers du projet
 COPY . .
 
-# Installer les dépendances PHP
-RUN composer install --no-dev --optimize-autoloader --no-interaction
+# Solution 1: Désactiver les scripts Composer problématiques
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
 
 # Créer les dossiers nécessaires
-RUN mkdir -p var/cache var/log public/uploads/profile \
-    && chmod -R 777 var/
+RUN mkdir -p var/cache var/log public/uploads/profile
+
+# Solution 2: Nettoyer manuellement le cache pour prod
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:clear --no-warmup || true
+RUN APP_ENV=prod APP_DEBUG=0 php bin/console cache:warmup || true
+
+# Définir les permissions
+RUN chmod -R 777 var/
 
 EXPOSE 8000
 
