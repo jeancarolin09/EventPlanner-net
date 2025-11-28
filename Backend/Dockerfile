@@ -1,42 +1,38 @@
 FROM php:8.3-fpm
 
-# Installer les dépendances système
+# Install system dependencies
 RUN apt-get update && apt-get install -y \
+    nginx \
     default-libmysqlclient-dev \
     libicu-dev \
     git \
     curl \
     zip \
-    unzip \
-    && rm -rf /var/lib/apt/lists/*
+    unzip
 
-# Installer les extensions PHP requises
-RUN docker-php-ext-install \
-    pdo \
-    pdo_mysql \
-    intl \
-    && docker-php-ext-enable pdo_mysql
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql intl
 
-# Installer Composer
+# Install Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-# Définir le répertoire de travail
 WORKDIR /app
 
-# Copier les fichiers du projet
+# Copy project
 COPY . .
 
-    # Installer les dépendances Composer
-RUN composer install --optimize-autoloader
+RUN composer install --optimize-autoloader --no-dev
 
-# Créer les répertoires nécessaires
-RUN mkdir -p var/cache var/log public/uploads/profile
+# Configure Nginx
+RUN rm /etc/nginx/sites-enabled/default
+COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Définir les permissions
-RUN chmod -R 755 var/
+# Create necessary directories
+RUN mkdir -p var/cache var/log public/uploads/profile && \
+    chmod -R 777 var/ public/uploads/profile
 
-# Exposer le port
-EXPOSE 8000
+# Railway exposes $PORT dynamically
+ENV PORT=8080
 
-# Commande par défaut
-CMD ["php-fpm"]
+# Start Nginx + PHP-FPM
+CMD service nginx start && php-fpm
